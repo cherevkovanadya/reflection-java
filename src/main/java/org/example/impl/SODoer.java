@@ -1,4 +1,6 @@
-package org.example;
+package org.example.impl;
+
+import org.example.interfaces.SomeOtherInterface;
 
 public class SODoer implements SomeOtherInterface {
     @Override
