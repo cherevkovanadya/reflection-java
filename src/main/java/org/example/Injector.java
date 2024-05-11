@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Properties;
@@ -10,8 +11,10 @@ public class Injector {
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream("dependencies.properties"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File dependencies.properties not found", e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error reading dependencies.properties", e);
         }
 
         Class<?> clazz = object.getClass();
@@ -27,8 +30,10 @@ public class Injector {
                         field.setAccessible(true);
                         field.set(object, implementationInstance);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        throw new RuntimeException("Error creating instance for " + fieldType, e);
                     }
+                } else {
+                    throw new RuntimeException("Implementation not found for " + fieldType);
                 }
             }
         }
